@@ -1,8 +1,9 @@
+import 'dart:async';
+import 'dart:math';
 import 'package:flutter/material.dart';
 import 'package:neubrutalism_ui/neubrutalism_ui.dart';
 import 'package:rentals/neo_widget/nb_drawer.dart';
 import '../../neo_widget/nb_container.dart';
-import '../../neo_widget/nb_clippers.dart';
 
 class TestView extends StatefulWidget {
   TestView({super.key});
@@ -19,6 +20,17 @@ class _TestViewState extends State {
   @override
   void initState() {
     super.initState();
+    _startIncrementing();
+  }
+
+  void _startIncrementing() {
+    Timer.periodic(const Duration(milliseconds: 100), (timer) {
+      if (test! >= 360) {
+        test = 0;
+      }
+      test = test! + 1;
+      setState(() {});
+    });
   }
 
   @override
@@ -29,28 +41,33 @@ class _TestViewState extends State {
       ),
       backgroundColor: Colors.grey,
       body: Stack(
-        alignment: Alignment.bottomCenter,
+        alignment: Alignment.centerLeft,
         children: [
-          Container(
-            height: 500,
-            width: 200,
+          SizedBox(
+            height: MediaQuery.of(context).size.height,
+            width: MediaQuery.of(context).size.width * 0.2,
             child: Padding(
               padding: const EdgeInsets.fromLTRB(0, 0, 0, 30),
-              child: const NBDrawer(
-                  children: [
-                    Text(
-                        style: TextStyle(
-                            color: Colors.black,
-                            fontWeight: FontWeight.bold,
-                            fontSize: 20),
-                        'test'),
-                    Text('test'),
-                    Text('test'),
-                    Text('test')
-                  ],
-                  boxShape: BoxShape.rectangle,
-                  borderStyle: BorderStyle.solid,
-                  offset: const Offset(4, 4)),
+              child: NeoDrawer(
+                onDestinationSelected: (index) {
+                  debugPrint(index.toString());
+                },
+                borderStyle: BorderStyle.solid,
+                offset: const Offset(4, 4),
+                children: List.generate(
+                  5,
+                  (index) => ListTile(
+                    title: Text(
+                        textAlign: TextAlign.center,
+                        style:
+                            const TextStyle(fontSize: 20, color: Colors.black),
+                        'Destination $index'),
+                    onTap: () {
+                      debugPrint('Destination $index');
+                    },
+                  ),
+                ),
+              ),
             ),
           ),
           Column(
@@ -109,7 +126,12 @@ class _TestViewState extends State {
                                   animationDuration: 200,
                                   enableAnimation: true,
                                   icon: const Icon(Icons.add),
-                                  onPressed: () {}),
+                                  onPressed: () {
+                                    test ??= 0;
+                                    test = 0;
+                                    debugPrint(test.toString());
+                                    setState(() {});
+                                  }),
                               Padding(
                                 padding: const EdgeInsets.all(8.0),
                                 child: Row(children: [
@@ -125,7 +147,7 @@ class _TestViewState extends State {
                                           Icons.exposure_minus_1_sharp),
                                       onPressed: () {
                                         test ??= 0;
-                                        test = test! + 1;
+                                        test = test! + 45;
                                         debugPrint(test.toString());
                                         setState(() {});
                                       })
@@ -140,15 +162,11 @@ class _TestViewState extends State {
                   crossAxisAlignment: CrossAxisAlignment.center,
                   children: [
                     NeoContainer(
-                      borderRadius: BorderRadius.circular(10),
-                      height: 150,
-                      width: 150,
-                      rotation: test!.toDouble(),
-                      child: Text(test.toString()),
+                      rotation: test!.toDouble() * pi / 180,
                     )
                   ],
                 ),
-                Column(
+                const Column(
                   children: [
                     SizedBox(
                       height: 200,

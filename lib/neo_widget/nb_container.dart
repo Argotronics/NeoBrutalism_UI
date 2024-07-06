@@ -1,3 +1,5 @@
+import 'dart:math';
+
 import 'package:flutter/material.dart';
 import 'neo_settings.dart';
 
@@ -37,7 +39,7 @@ class NeoContainer extends StatefulWidget {
     this.boxShape,
     this.padding,
     this.alignment,
-    this.forgroundDecoration,
+    this.foregroundDecoration,
     this.rotation,
     this.decoration,
   });
@@ -77,11 +79,45 @@ class NeoContainer extends StatefulWidget {
   /// By default, it is set to neoBlack.
 
   final Color borderColor;
+
+  /// - height (optional): A double that defines the height of the container.
+  /// By default, it is set to null.
+  /// If the height is set to null, the height will be determined by the child widget.
+  /// If the child is null, the height will be set to 25.
+  /// If the child is not null, the height will be set to the height of the child widget.
+
   final double? height;
+
+  /// - width (optional): A double that defines the width of the container.
+  /// By default, it is set to null.
+  /// If the width is set to null, the width will be determined by the child widget.
+  ///
+  /// If the width is set to null, the width will be determined by the child widget.
+  /// If the child is null, the width will be set to 25.
+
   final double? width;
+
+  /// - borderWidth (optional): A double that defines the width of the border of the container.
+  /// By default, it is set to neoBorder.
+  /// If the borderWidth is set to null, the border will not be displayed.
+
   final double borderWidth;
+
+  /// - shadowBlurRadius (optional): A double that defines the blur radius of the shadow of the container.
+  /// By default, it is set to neoShadowBlurRadius.
+
   final double shadowBlurRadius;
+
+  /// - shadowBlurStyle (optional): A BlurStyle that defines the style of the shadow of the container.
+  /// By default, it is set to neoBlurStyle.
+  /// The value can be BlurStyle.solid or BlurStyle.outer.
+
   final BlurStyle shadowBlurStyle;
+
+  /// - child (optional): A Widget that defines the child of the container.
+  /// By default, it is set to null.
+  /// If the child is set to null, the container will be empty.
+
   final Widget? child;
 
   /// - borderRadius (optional): A BorderRadius that defines the radius of the container.
@@ -101,10 +137,10 @@ class NeoContainer extends StatefulWidget {
   ///
   final AlignmentGeometry? alignment;
 
-  /// - forgroundDecoration (optional): A BoxDecoration that defines the forgroundDecoration of the container.
+  /// - foregroundDecoration (optional): A BoxDecoration that defines the foregroundDecoration of the container.
   /// By default, it is set to null.
   ///
-  final BoxDecoration? forgroundDecoration;
+  final BoxDecoration? foregroundDecoration;
 
   /// - rotation (optional): A double that defines the rotation of the container.
   /// By default, it is set to null.
@@ -143,7 +179,7 @@ class _NeoContainerState extends State<NeoContainer> {
       boxShadow: [
         BoxShadow(
           color: widget.shadowColor,
-          offset: widget.offset,
+          //offset: localOffset,
           blurRadius: widget.shadowBlurRadius,
           spreadRadius: 0,
           blurStyle: widget.shadowBlurStyle,
@@ -151,17 +187,16 @@ class _NeoContainerState extends State<NeoContainer> {
       ],
     );
     return (widget.rotation == null)
-        ? neoContainer(widget: widget, decoration: decoration)
+        ? _NeoContainer(widget: widget, decoration: decoration)
         : Transform(
-            origin: Offset(widget.width! / 2, widget.height! / 2),
+            origin: Offset((widget.width ?? 25) / 2, (widget.height ?? 25) / 2),
             transform: Matrix4.rotationZ(widget.rotation!),
-            child: neoContainer(widget: widget, decoration: decoration));
+            child: _NeoContainer(widget: widget, decoration: decoration));
   }
 }
 
-class neoContainer extends StatelessWidget {
-  const neoContainer({
-    super.key,
+class _NeoContainer extends StatelessWidget {
+  const _NeoContainer({
     required this.widget,
     required this.decoration,
   });
@@ -171,10 +206,20 @@ class neoContainer extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    //adjust the offset based on the rotation if it is set
+    Offset localOffset = widget.offset;
+    if (widget.rotation != null) {
+      double rotatedOffsetY = (widget.offset.dx * cos(widget.rotation!)) -
+          (widget.offset.dy * sin(widget.rotation!));
+      double rotatedOffsetX = (widget.offset.dx * sin(widget.rotation!)) +
+          (widget.offset.dx * cos(widget.rotation!));
+      localOffset = Offset(rotatedOffsetX, rotatedOffsetY);
+    }
+
     return Container(
       padding: widget.padding,
       alignment: widget.alignment,
-      foregroundDecoration: widget.forgroundDecoration,
+      foregroundDecoration: widget.foregroundDecoration,
       height: widget.height,
       width: widget.width,
       decoration: (widget.decoration == null)
@@ -193,15 +238,17 @@ class neoContainer extends StatelessWidget {
               boxShadow: [
                 BoxShadow(
                   color: widget.shadowColor,
-                  offset: widget.offset,
+                  offset: Offset(localOffset.dx, localOffset.dy),
                   blurRadius: widget.shadowBlurRadius,
-                  spreadRadius: 0,
                   blurStyle: widget.shadowBlurStyle,
                 ),
               ],
             )
           : decoration,
-      child: widget.child,
+      child: SizedBox(
+          width: widget.width ?? 25,
+          height: widget.height ?? 25,
+          child: widget.child),
     );
   }
 }

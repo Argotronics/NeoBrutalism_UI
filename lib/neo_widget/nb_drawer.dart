@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:rentals/neo_widget/neo_settings.dart';
 
-class NBDrawer extends StatefulWidget {
+class NeoDrawer extends StatefulWidget {
   /// A customizable neobrutalist-style Drawer Template, allowing
   /// user to experiment freely without any restriction in functionality.
   ///
@@ -21,16 +21,21 @@ class NBDrawer extends StatefulWidget {
   ///   - const neuOffset = Offset(4, 4);
   ///   - const neuBlurStyle = BlurStyle.solid;
 
-  const NBDrawer({
+  const NeoDrawer({
     super.key,
-    this.offset = neoOffset,
+    this.offset,
     this.borderStyle,
-    this.boxShape,
     this.children,
+    this.shadowBlurRadius,
+    this.shadowBlurStyle,
+    this.selectedIndex,
+    this.onDestinationSelected,
   });
-  final List<Widget>? children;
 
-  final BoxShape? boxShape;
+  /// - children (required): A list of Widgets that are displayed as destinations in the drawer.
+  /// The children are displayed in the order they are provided.
+
+  final List<Widget>? children;
 
   /// - borderStyle (optional): A BorderStyle that defines the style of the border of the container.
   ///
@@ -47,33 +52,47 @@ class NBDrawer extends StatefulWidget {
   /// By default, it is set to neoOffset.
   ///  - offset (optional): An Offset that defines the position of the shadow of the container.
 
-  final Offset offset;
+  final Offset? offset;
 
-  get borderRadius => null;
+  /// - onDestinationSelected (optional): A function that is called when a destination is selected.
+  ///  The function is passed the index of the selected destination.
+  /// If the function is null, the destinations will not be selectable.
+  /// By default, it is set to null.
 
-  get borderColor => null;
+  final void Function(int index)? onDestinationSelected;
 
-  get borderWidth => null;
+  /// - shadowBlurRadius (optional): A double that defines the blur radius of the shadow of the container.
+  /// By default, it is set to 0.0.
 
-  get shadowColor => null;
+  final double? shadowBlurRadius;
 
-  get shadowBlurRadius => null;
+  /// - shadowBlurStyle (optional): A BlurStyle that defines the style of the shadow of the container.
+  /// By default, it is set to neoBlurStyle.
 
-  get shadowBlurStyle => null;
+  final BlurStyle? shadowBlurStyle;
 
-  get child => null;
+  /// - selectedIndex (optional): An int that defines the index of the selected destination.
+  /// By default, it is set to null.
+  /// If the selectedIndex is null, no destination will be selected.
+  /// If the selectedIndex is not null, the destination at the selectedIndex will be selected.
+  /// If the selectedIndex is greater than the number of destinations, no destination will be selected.
+  /// If the selectedIndex is less than 0, no destination will be selected.
+  /// If the selectedIndex is equal to 0, the first destination will be selected.
+  /// If the selectedIndex is equal to 1, the second destination will be selected.
+
+  final int? selectedIndex;
 
   @override
   _NBDrawerState createState() => _NBDrawerState();
 }
 
-class _NBDrawerState extends State<NBDrawer> {
+class _NBDrawerState extends State<NeoDrawer> {
   @override
   Widget build(BuildContext context) {
     return Container(
       height: MediaQuery.of(context).size.height,
       decoration: BoxDecoration(
-        color: Colors.white,
+        color: Colors.grey,
         borderRadius: BorderRadius.circular(25),
         border: Border.all(
           color: Colors.black,
@@ -82,8 +101,7 @@ class _NBDrawerState extends State<NBDrawer> {
         boxShadow: [
           BoxShadow(
             blurRadius: widget.shadowBlurRadius ?? 0.0,
-            offset: neoOffset,
-            spreadRadius: 0.0,
+            offset: widget.offset ?? neoOffset,
             blurStyle: widget.shadowBlurStyle ?? neoBlurStyle,
           ),
         ],
@@ -92,7 +110,15 @@ class _NBDrawerState extends State<NBDrawer> {
           borderRadius: BorderRadius.circular(22),
           clipBehavior: Clip.antiAlias,
           child: NavigationDrawer(
-              backgroundColor: Colors.transparent,
+              surfaceTintColor: Colors.grey,
+              onDestinationSelected: (index) {
+                if (widget.onDestinationSelected != null) {
+                  widget.onDestinationSelected!(index);
+                }
+              },
+              indicatorColor: Colors.amber,
+              selectedIndex: widget.selectedIndex,
+              backgroundColor: Color.fromARGB(194, 162, 32, 32),
               children: widget.children ?? [])),
     );
   }
