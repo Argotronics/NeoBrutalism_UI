@@ -6,17 +6,17 @@ import 'package:rentals/neo_widget/nb_drawer.dart';
 import '../../neo_widget/nb_container.dart';
 
 class TestView extends StatefulWidget {
-  TestView({super.key});
+  const TestView({super.key});
 
   static const routeName = '/test';
   @override
-  _TestViewState createState() => _TestViewState();
+  TestViewState createState() => TestViewState();
 }
 
 String? sex = '';
 double? test = 0;
 
-class _TestViewState extends State {
+class TestViewState extends State {
   @override
   void initState() {
     super.initState();
@@ -49,6 +49,7 @@ class _TestViewState extends State {
             child: Padding(
               padding: const EdgeInsets.fromLTRB(0, 0, 0, 30),
               child: NeoDrawer(
+                borderRadius: BorderRadius.circular(0),
                 onDestinationSelected: (index) {
                   debugPrint(index.toString());
                 },
@@ -90,9 +91,7 @@ class _TestViewState extends State {
                     buttonColor: Colors.lightBlueAccent,
                     animationDuration: 200,
                     enableAnimation: true,
-                    onPressed: () {
-                      sex = 'True he is';
-                    },
+                    onPressed: () {},
                     text: const Text(textAlign: TextAlign.center, 'contest')),
               ),
               NeuContainer(
@@ -162,7 +161,12 @@ class _TestViewState extends State {
                   crossAxisAlignment: CrossAxisAlignment.center,
                   children: [
                     NeoContainer(
+                      height: 200,
+                      width: 200,
                       rotation: test!.toDouble() * pi / 180,
+                      child: Text(test.toString(),
+                          textAlign: TextAlign.center,
+                          style: const TextStyle(fontSize: 20)),
                     )
                   ],
                 ),

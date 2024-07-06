@@ -1,26 +1,20 @@
 import 'dart:math';
-
 import 'package:flutter/material.dart';
 import 'neo_settings.dart';
 
 class NeoContainer extends StatefulWidget {
-  /// A customizable neobrutalist-style Container Template, allowing
+  /// A customizable neobrutalist-style Container, allowing
   /// user to experiment freely without any restriction in functionality.
-  ///
   /// This button is built using Flutter's `Material` widget, and is designed to
   /// follow the Neubrutalism UI style guidelines.
-  ///
   /// *[Constants]
-
-  ///   - const neuBlack = Colors.black;
-  ///   - const neuDefault1 = Colors.teal;
-  ///   - const neuShadow = Color(0xFF080808);
-  ///
-  ///   - const neuBorder = 3.0;
-  ///   - const neuShadowBlurRadius = 0.0;
-  ///
-  ///   - const neuOffset = Offset(4, 4);
-  ///   - const neuBlurStyle = BlurStyle.solid;
+  ///  - const neoBlack = Colors.black;
+  /// - const neoDefault1 = Colors.teal;
+  /// - const neoShadow = Color(0xFF080808);
+  /// - const neoBorder = 3.0;
+  /// - const neoShadowBlurRadius = 0.0;
+  /// - const neoOffset = Offset(4, 4);
+  /// - const neoBlurStyle = BlurStyle.solid;
 
   const NeoContainer({
     super.key,
@@ -154,11 +148,10 @@ class NeoContainer extends StatefulWidget {
   final BoxDecoration? decoration;
 
   @override
-  // ignore: library_private_types_in_public_api
-  _NeoContainerState createState() => _NeoContainerState();
+  NeoContainerState createState() => NeoContainerState();
 }
 
-class _NeoContainerState extends State<NeoContainer> {
+class NeoContainerState extends State<NeoContainer> {
   @override
   Widget build(BuildContext context) {
     BoxDecoration? decoration = widget.decoration;
@@ -179,7 +172,6 @@ class _NeoContainerState extends State<NeoContainer> {
       boxShadow: [
         BoxShadow(
           color: widget.shadowColor,
-          //offset: localOffset,
           blurRadius: widget.shadowBlurRadius,
           spreadRadius: 0,
           blurStyle: widget.shadowBlurStyle,

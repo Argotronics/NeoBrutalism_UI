@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:flutter/widgets.dart';
 import 'package:rentals/neo_widget/neo_settings.dart';
 
 class NeoDrawer extends StatefulWidget {
@@ -30,6 +29,10 @@ class NeoDrawer extends StatefulWidget {
     this.shadowBlurStyle,
     this.selectedIndex,
     this.onDestinationSelected,
+    this.borderColor,
+    this.borderWidth,
+    this.borderRadius,
+    this.backgroundColor,
   });
 
   /// - children (required): A list of Widgets that are displayed as destinations in the drawer.
@@ -82,43 +85,62 @@ class NeoDrawer extends StatefulWidget {
 
   final int? selectedIndex;
 
+  /// - borderColor (optional): A Color that defines the color of the border of the container.
+  /// By default, it is set to neoBlack.
+
+  final Color? borderColor;
+
+  /// - borderWidth (optional): A double that defines the width of the border of the container.
+  /// By default, it is set to neoBorder.
+
+  final double? borderWidth;
+
+  final BorderRadius? borderRadius;
+
+  final Color? backgroundColor;
+
   @override
-  _NBDrawerState createState() => _NBDrawerState();
+  NBDrawerState createState() => NBDrawerState();
 }
 
-class _NBDrawerState extends State<NeoDrawer> {
+class NBDrawerState extends State<NeoDrawer> {
   @override
   Widget build(BuildContext context) {
+    BorderRadius? outsideBorderRadius =
+        (widget.borderRadius?.add(BorderRadius.circular(3)) ??
+            const BorderRadius.only(
+              topRight: Radius.circular(22),
+              bottomRight: Radius.circular(22),
+            )) as BorderRadius?;
     return Container(
       height: MediaQuery.of(context).size.height,
       decoration: BoxDecoration(
-        color: Colors.grey,
-        borderRadius: BorderRadius.circular(25),
+        color: widget.backgroundColor ?? neoDefault1,
+        borderRadius: outsideBorderRadius,
         border: Border.all(
-          color: Colors.black,
-          width: 3,
+          color: widget.borderColor ?? neoBlack,
+          width: widget.borderWidth ?? neoBorder,
         ),
         boxShadow: [
           BoxShadow(
-            blurRadius: widget.shadowBlurRadius ?? 0.0,
+            blurRadius: widget.shadowBlurRadius ?? neoShadowBlurRadius,
             offset: widget.offset ?? neoOffset,
             blurStyle: widget.shadowBlurStyle ?? neoBlurStyle,
           ),
         ],
       ),
       child: ClipRRect(
-          borderRadius: BorderRadius.circular(22),
+          borderRadius: widget.borderRadius ?? BorderRadius.zero,
           clipBehavior: Clip.antiAlias,
           child: NavigationDrawer(
-              surfaceTintColor: Colors.grey,
               onDestinationSelected: (index) {
                 if (widget.onDestinationSelected != null) {
                   widget.onDestinationSelected!(index);
                 }
               },
+              backgroundColor: Colors.transparent,
               indicatorColor: Colors.amber,
               selectedIndex: widget.selectedIndex,
-              backgroundColor: Color.fromARGB(194, 162, 32, 32),
               children: widget.children ?? [])),
     );
   }

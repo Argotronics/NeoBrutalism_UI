@@ -53,7 +53,7 @@ class SampleItemListView extends StatelessWidget {
             );
           },
         ),
-        Container(
+        SizedBox(
           height: 200,
           width: MediaQuery.of(context).size.width,
           child: ListView.builder(
